@@ -1,0 +1,71 @@
+<h1>Administration</h1>
+
+<p>This page requires authentication.</p>
+
+<button
+  type="button"
+  (click)="callAdminApi()"
+  [disabled]="loading">
+  {{ loading ? 'Calling API...' : 'Call Admin API' }}
+</button>
+
+<hr />
+
+<div *ngIf="loading">
+  Loading...
+</div>
+
+<div *ngIf="errorMessage">
+  <h3>API Error</h3>
+
+  <pre>{{ errorMessage }}</pre>
+</div>
+
+<div *ngIf="adminResponse">
+
+  <h2>Admin API Response</h2>
+
+  <p>
+    <strong>Message:</strong>
+    {{ adminResponse.message }}
+  </p>
+
+  <p>
+    <strong>Authenticated:</strong>
+    {{ adminResponse.isAuthenticated }}
+  </p>
+
+  <p>
+    <strong>User:</strong>
+    {{ adminResponse.user }}
+  </p>
+
+  <p>
+    <strong>Is Admin:</strong>
+    {{ adminResponse.isAdmin }}
+  </p>
+
+  <p>
+    <strong>Role Claim Type:</strong>
+    {{ adminResponse.roleClaimType }}
+  </p>
+
+  <h3>Claims</h3>
+
+  <table border="1" cellpadding="6">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let claim of adminResponse.allClaims">
+        <td>{{ claim.type }}</td>
+        <td>{{ claim.value }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

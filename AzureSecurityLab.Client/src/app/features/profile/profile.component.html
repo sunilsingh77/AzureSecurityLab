@@ -1,0 +1,32 @@
+<section>
+  <h2>Profile</h2>
+
+  @if (account) {
+    <div>
+      <p>
+        <strong>Signed in as:</strong>
+        {{ account.username }}
+      </p>
+    </div>
+  }
+
+  <hr />
+
+  <h3>ASP.NET Core API Response</h3>
+
+  @if (loading) {
+    <p>Loading...</p>
+  }
+
+  @if (error) {
+    <p>
+      {{ error }}
+    </p>
+  }
+
+  @if (profile) {
+    <pre>{{ profile | json }}</pre>
+  }
+
+  <button type="button" (click)="logout()">Sign out</button>
+</section>

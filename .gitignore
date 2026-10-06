@@ -1,0 +1,103 @@
+# =========================================================
+# Visual Studio / .NET
+# =========================================================
+
+.vs/
+.vscode/
+.idea/
+
+[Bb]in/
+[Oo]bj/
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.history/
+
+# Build output
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# Test results
+TestResults/
+[Tt]est[Rr]esult*/
+
+# Coverage
+coverage/
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# =========================================================
+# ASP.NET Core
+# =========================================================
+
+# Local configuration / secrets
+appsettings.Local.json
+appsettings.*.Local.json
+
+# User secrets
+secrets.json
+
+# Development certificates
+*.pfx
+*.p12
+
+# Logs
+*.log
+logs/
+**/appsettings-backup.json
+# =========================================================
+# Angular / Node.js
+# =========================================================
+
+node_modules/
+
+dist/
+
+.angular/
+
+.cache/
+
+.npm/
+
+*.tsbuildinfo
+
+# Angular local environment files
+environment.local.ts
+environment.*.local.ts
+
+# =========================================================
+# Environment variables / secrets
+# =========================================================
+
+.env
+.env.*
+!.env.example
+
+# =========================================================
+# OS files
+# =========================================================
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================================================
+# Temporary files
+# =========================================================
+
+*.tmp
+*.temp
+*.bak
+*.swp
