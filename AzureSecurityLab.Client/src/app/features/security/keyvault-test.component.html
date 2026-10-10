@@ -1,0 +1,34 @@
+
+<h2>Azure Key Vault Integration Test</h2>
+
+<p>
+  This test calls the secured API, which retrieves a secret from Azure Key Vault.
+</p>
+
+<button
+  type="button"
+  (click)="testKeyVault()"
+  [disabled]="loading">
+  {{ loading ? 'Testing...' : 'Test Key Vault API' }}
+</button>
+
+@if (loading) {
+<div>
+  <p>Calling API...</p>
+</div>
+}
+
+@if(response){
+<div>
+  <h3>API Response</h3>
+  <pre>{{ response | json }}</pre>
+</div>
+}
+
+@if(errorMessage){
+<div>
+  <h3>Request Failed</h3>
+  <pre>{{ errorMessage }}</pre>
+</div>
+}
+
