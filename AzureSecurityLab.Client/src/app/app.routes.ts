@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { MsalGuard } from '@azure/msal-angular';
-
+import { KeyvaultTestComponent } from './features/security/keyvault-test.component';
 export const routes: Routes = [
   {
     path: '',
@@ -27,10 +27,13 @@ export const routes: Routes = [
 
   {
     path: 'login-failed',
-
     loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
   },
-
+  {
+    path: 'keyvault-test',
+    loadComponent: () => import('./features/security/keyvault-test.component').then((m) => m.KeyvaultTestComponent),
+    canActivate: [MsalGuard]
+  },
   {
     path: '**',
 

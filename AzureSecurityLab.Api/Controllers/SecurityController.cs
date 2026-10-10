@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AzureSecurityLab.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.Identity.Web.Resource;
+
 namespace AzureSecurityLab.Api.Controllers;
 
 [ApiController]
@@ -73,20 +76,33 @@ public class SecurityController : ControllerBase
         return Ok(new
         {
             Message = "Admin access successful.",
-
             IsAuthenticated = User.Identity?.IsAuthenticated,
-
             User = User.Identity?.Name,
-
             IsAdmin = User.IsInRole("Admin"),
-
             RoleClaimType = (User.Identity as ClaimsIdentity)?.RoleClaimType,
-
             AllClaims = User.Claims.Select(c => new
             {
                 Type = c.Type,
                 Value = c.Value
             })
+        });
+    }
+
+    [HttpGet("keyvault-test")]
+    [Authorize]
+    [RequiredScope("access_as_user")]
+    public async Task<IActionResult> KeyVaultTest(
+        [FromServices] KeyVaultService keyVaultService,
+        CancellationToken cancellationToken)
+    {
+        var secret = await keyVaultService.GetSecretAsync(
+            "Lab-TestSecret",
+            cancellationToken);
+
+        return Ok(new
+        {
+            Message = "Key Vault access successful.",
+            Secret = secret
         });
     }
 }

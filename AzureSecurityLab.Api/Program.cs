@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using AzureSecurityLab.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +13,19 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+var keyVaultUri = builder.Configuration["KeyVault:Uri"];
 
+if (string.IsNullOrWhiteSpace(keyVaultUri))
+{
+    throw new InvalidOperationException("KeyVault:Uri is not configured.");
+}
+
+builder.Services.AddSingleton<SecretClient>(_ =>
+{
+    return new SecretClient(new Uri(keyVaultUri), new DefaultAzureCredential());
+});
+
+builder.Services.AddScoped<KeyVaultService>();
 // ========================================
 // Swagger
 // ========================================
