@@ -41,6 +41,11 @@ export const routes: Routes = [
     canActivate: [MsalGuard]
   },
   {
+    path: 'storage',
+    loadComponent: () => import('./storage/storage.component').then(m => m.StorageComponent),
+    canActivate: [MsalGuard]
+  },
+  {
     path: '**',
 
     redirectTo: '',
