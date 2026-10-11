@@ -8,6 +8,7 @@ namespace AzureSecurityLab.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class SecurityController : ControllerBase
 {
     [HttpGet("public")]
@@ -38,7 +39,6 @@ public class SecurityController : ControllerBase
     //}
 
     [HttpGet("profile")]
-    [Authorize]
     public IActionResult Profile()
     {
         return Ok(new
@@ -89,7 +89,6 @@ public class SecurityController : ControllerBase
     }
 
     [HttpGet("keyvault-test")]
-    [Authorize]
     [RequiredScope("access_as_user")]
     public async Task<IActionResult> KeyVaultTest(
         [FromServices] KeyVaultService keyVaultService,
@@ -103,6 +102,25 @@ public class SecurityController : ControllerBase
         {
             Message = "Key Vault access successful.",
             Secret = secret
+        });
+    }
+
+    // Preserve your existing profile, Key Vault,
+    // and other actions here.
+
+    [HttpGet("sql-test")]
+    public async Task<IActionResult> SqlTest(
+        [FromServices] AzureSqlService sqlService,
+        CancellationToken cancellationToken)
+    {
+        var records = await sqlService.GetRecordsAsync(
+            cancellationToken);
+
+        return Ok(new
+        {
+            Database = "AzureSecurityLabDb",
+            Count = records.Count,
+            Records = records
         });
     }
 }

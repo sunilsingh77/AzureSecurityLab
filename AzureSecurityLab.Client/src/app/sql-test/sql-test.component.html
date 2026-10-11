@@ -1,0 +1,129 @@
+
+<section class="sql-test-page">
+  <header class="page-header">
+    <div>
+      <h1>Azure SQL Security Lab</h1>
+      <p class="subtitle">
+        Test API connectivity to Azure SQL using Managed Identity.
+      </p>
+    </div>
+
+    <span class="environment-badge">
+      Security Lab
+    </span>
+  </header>
+
+  <section class="connection-card">
+    <div class="card-heading">
+      <div class="database-icon" aria-hidden="true">
+        DB
+      </div>
+
+      <div>
+        <h2>Database Connection Test</h2>
+        <p>AzureSecurityLabDb</p>
+      </div>
+    </div>
+
+    <div class="connection-details">
+      <div class="detail-item">
+        <span class="detail-label">Database</span>
+        <strong>AzureSecurityLabDb</strong>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">Authentication</span>
+        <strong>App Service Managed Identity</strong>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">API Endpoint</span>
+        <strong>/api/security/sql-test</strong>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="primary-button"
+      (click)="testConnection()"
+      [disabled]="loading">
+
+      <span *ngIf="!loading">Test SQL Connection</span>
+      <span *ngIf="loading">Testing Connection...</span>
+    </button>
+  </section>
+
+  <div
+    *ngIf="loading"
+    class="status-message loading-message"
+    role="status">
+    <span class="spinner" aria-hidden="true"></span>
+    Calling the protected API and retrieving SQL records...
+  </div>
+
+  <div
+    *ngIf="errorMessage"
+    class="status-message error-message"
+    role="alert">
+    <strong>Connection test failed</strong>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <section *ngIf="result as response" class="results-section">
+    <div class="result-header">
+      <div>
+        <h2>Connection Successful</h2>
+        <p>The API returned a successful response.</p>
+      </div>
+
+      <span class="success-badge">Success</span>
+    </div>
+
+    <div class="summary-grid">
+      <article class="summary-card">
+        <span class="summary-label">Database</span>
+        <strong>{{ response.database }}</strong>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-label">Records Retrieved</span>
+        <strong>{{ response.count }}</strong>
+      </article>
+    </div>
+
+    <div class="table-container">
+      <table *ngIf="response.records.length > 0">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Record Name</th>
+            <th scope="col">Created At (UTC)</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let record of response.records">
+            <td>{{ record.id }}</td>
+            <td>{{ record.recordName }}</td>
+            <td>{{ record.createdAtUtc | date:'medium':'UTC' }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p
+        *ngIf="response.records.length === 0"
+        class="empty-state">
+        The API connected successfully, but no records were returned.
+      </p>
+    </div>
+  </section>
+
+  <section class="security-note">
+    <h3>Security Architecture</h3>
+    <p>
+      Angular authenticates the user through Microsoft Entra ID.
+      The API independently authenticates to Azure SQL using its
+      Managed Identity. Database credentials are not stored in Angular.
+    </p>
+  </section>
+</section>
