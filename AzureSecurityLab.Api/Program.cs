@@ -73,9 +73,11 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     });
 });
+
+builder.Services.AddScoped<AzureSqlService>();
 var app = builder.Build();
 // ========================================
 // Middleware

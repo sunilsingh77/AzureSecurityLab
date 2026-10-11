@@ -33,6 +33,10 @@ export const routes: Routes = [
     path: 'keyvault-test',
     loadComponent: () => import('./features/security/keyvault-test.component').then((m) => m.KeyvaultTestComponent),
     canActivate: [MsalGuard]
+  }, {
+    path: 'sql-test',
+    loadComponent: () => import('./sql-test/sql-test.component').then((m) => m.SqlTestComponent),
+    canActivate: [MsalGuard]
   },
   {
     path: '**',
