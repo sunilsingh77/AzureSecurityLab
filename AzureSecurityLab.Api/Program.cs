@@ -78,6 +78,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<AzureSqlService>();
+builder.Services.AddSingleton<AzureBlobStorageService>();
 var app = builder.Build();
 // ========================================
 // Middleware

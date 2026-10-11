@@ -1,6 +1,8 @@
+
 import {
   ApplicationConfig,
-  APP_INITIALIZER
+  APP_INITIALIZER,
+  provideZoneChangeDetection
 } from '@angular/core';
 
 import {
@@ -55,7 +57,7 @@ export const appConfig:
   ApplicationConfig = {
 
   providers: [
-
+    provideZoneChangeDetection(),
     provideRouter(routes),
 
     provideHttpClient(

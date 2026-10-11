@@ -52,15 +52,16 @@ export const msalInterceptorConfig:
   MsalInterceptorConfiguration = {
   interactionType: InteractionType.Redirect,
 
-  protectedResourceMap:
-    new Map<string, string[]>([
-      [
-        `${environment.api.baseUrl}/security/*`,
-        [
-          environment.apiScopes.accessAsUser
-        ]
-      ]
-    ]),
-
+  protectedResourceMap: new Map<string, string[]>([
+    [
+      `${environment.api.baseUrl}/security/*`,
+      [environment.apiScopes.accessAsUser]
+    ],
+    [
+      `${environment.api.baseUrl}/storage/*`,
+      [environment.apiScopes.accessAsUser]
+    ]
+  ]),
+  
   strictMatching: true
 };

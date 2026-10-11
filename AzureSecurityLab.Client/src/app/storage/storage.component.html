@@ -1,0 +1,40 @@
+
+<section>
+  <h2>Azure Blob Storage Lab</h2>
+  <p>Upload and download files through the authenticated API.</p>
+
+  <label for="storageFile">Choose a file (maximum 10 MB)</label>
+  <input
+    id="storageFile"
+    type="file"
+    accept="*/*"
+    (change)="onFileSelected($event)" />
+
+  <button
+    type="button"
+    [disabled]="!selectedFile || uploading"
+    (click)="upload()">
+    {{ uploading ? 'Uploading...' : 'Upload file' }}
+  </button>
+
+  @if (uploadResult; as result) {
+    <div role="status">
+      <h3>Upload successful</h3>
+      <p>{{ result.message }}</p>
+      <p>File: {{ result.originalFileName }}</p>
+      <p>Blob name: {{ result.blobName }}</p>
+      <p>Size: {{ result.size }} bytes</p>
+
+      <button
+        type="button"
+        [disabled]="downloading"
+        (click)="download()">
+        {{ downloading ? 'Downloading...' : 'Download file' }}
+      </button>
+    </div>
+  }
+
+  @if (errorMessage) {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>
