@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
-
 import { MsalGuard } from '@azure/msal-angular';
-import { KeyvaultTestComponent } from './features/security/keyvault-test.component';
 export const routes: Routes = [
   {
     path: '',
@@ -36,6 +34,10 @@ export const routes: Routes = [
   }, {
     path: 'sql-test',
     loadComponent: () => import('./sql-test/sql-test.component').then((m) => m.SqlTestComponent),
+    canActivate: [MsalGuard]
+  },{
+    path: 'sql-test-insert',
+    loadComponent: () => import('./sql-test/sql-test-insert.component').then((m) => m.SqlTestInsertComponent),
     canActivate: [MsalGuard]
   },
   {

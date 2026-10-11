@@ -1,0 +1,24 @@
+<section>
+  <h3>Azure SQL Managed Identity — Insert Test</h3>
+
+  <button
+    type="button"
+    [disabled]="inserting"
+    (click)="insertSqlRecord()">
+    {{ inserting ? 'Inserting...' : 'Insert SQL Test Record' }}
+  </button>
+
+  @if(insertResult){
+  <div role="status">
+    <h4>Insert successful</h4>
+    <p>Record ID: {{ insertResult.id }}</p>
+    <p>Record name: {{ insertResult.recordName }}</p>
+    <p>Created at UTC: {{ insertResult.createdAtUtc }}</p>
+  </div>
+}
+ @if(insertError){
+  <div role="alert">
+    <strong>Insert failed:</strong> {{ insertError }}
+  </div>
+}
+</section>

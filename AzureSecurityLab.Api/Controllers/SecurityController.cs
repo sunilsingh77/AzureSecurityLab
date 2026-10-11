@@ -1,8 +1,10 @@
 ﻿using AzureSecurityLab.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Web.Resource;
+using System.Data;
+using System.Security.Claims;
 
 namespace AzureSecurityLab.Api.Controllers;
 
@@ -11,6 +13,15 @@ namespace AzureSecurityLab.Api.Controllers;
 [Authorize]
 public class SecurityController : ControllerBase
 {
+    private readonly ILogger<SecurityController> _logger;
+    private readonly IConfiguration _configuration;
+
+    public SecurityController(ILogger<SecurityController> logger, IConfiguration configuration)
+    {
+        _logger = logger;
+        _configuration = configuration;
+    }
+
     [HttpGet("public")]
     [AllowAnonymous]
     public IActionResult Public()
@@ -123,4 +134,41 @@ public class SecurityController : ControllerBase
             Records = records
         });
     }
+
+    [HttpPost("sql-test/insert")]
+    [RequiredScope("access_as_user")]
+    public async Task<IActionResult> InsertSqlTestRecord(
+        [FromServices] AzureSqlService sqlService,
+        CancellationToken cancellationToken)
+    {
+        const string recordName = "Managed Identity Insert Test";
+
+        try
+        {
+            var record = await sqlService.InsertRecordAsync(
+                recordName,
+                cancellationToken);
+
+            return Ok(new
+            {
+                Message = "Record inserted successfully.",
+                Id = record.Id,
+                RecordName = record.RecordName,
+                CreatedAtUtc = record.CreatedAtUtc
+            });
+        }
+        catch (SqlException ex)
+        {
+            _logger.LogError(
+                ex,
+                "SQL Managed Identity insert test failed.");
+
+            return Problem(
+                title: "SQL insert test failed",
+                detail: "Check the API application logs for the database error.",
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
+
 }
