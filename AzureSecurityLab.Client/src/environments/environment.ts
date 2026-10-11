@@ -2,7 +2,8 @@ export const environment = {
   production: false,
 
   api: {
-    baseUrl: 'https://localhost:7125/api',
+    //baseUrl: 'https://localhost:7125/api',
+    baseUrl: 'https://azsecuritylab-api-sks77-2026.azurewebsites.net/api'
   },
 
   azureAd: {
