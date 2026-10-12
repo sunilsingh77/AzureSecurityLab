@@ -1,0 +1,134 @@
+
+<section class="test-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">AZURE SECURITY LAB</p>
+      <h1>Downstream API Test</h1>
+      <p class="subtitle">
+        Verify service-to-service authentication using Managed Identity.
+      </p>
+    </div>
+
+    <span class="environment-badge">Azure</span>
+  </header>
+
+  <section class="info-card">
+    <h2>Request details</h2>
+
+    <div class="detail-row">
+      <span class="detail-label">Caller API</span>
+      <span class="detail-value">AzureSecurityLab.Api</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Authentication</span>
+      <span class="detail-value">Microsoft Entra ID</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Service identity</span>
+      <span class="detail-value">Managed Identity</span>
+    </div>
+
+    <div class="detail-row endpoint-row">
+      <span class="detail-label">Test endpoint</span>
+      <code>{{ endpoint }}</code>
+    </div>
+  </section>
+
+  <section class="action-card">
+    <div>
+      <h2>Run connectivity test</h2>
+      <p>
+        The browser calls the caller API. The caller obtains an
+        app-only token and invokes the downstream API.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="test-button"
+      [disabled]="isLoading"
+      (click)="testConnection()">
+
+      @if (isLoading) {
+        <span class="spinner" aria-hidden="true"></span>
+        Testing...
+      } @else {
+        Test Connection
+      }
+    </button>
+  </section>
+
+  @if (isLoading) {
+    <section class="result-card loading-state" aria-live="polite">
+      <span class="spinner large" aria-hidden="true"></span>
+      <div>
+        <h2>Testing connection</h2>
+        <p>Waiting for the caller and downstream APIs...</p>
+      </div>
+    </section>
+  }
+
+  @if (!isLoading && statusCode !== null) {
+    <section class="result-card" aria-live="polite">
+      <div class="result-header">
+        <h2>Test result</h2>
+
+        <span
+          class="status-badge"
+          [class.status-success]="statusCode >= 200 && statusCode < 300"
+          [class.status-error]="statusCode < 200 || statusCode >= 300">
+
+          HTTP {{ statusCode }}
+        </span>
+      </div>
+
+      @if (statusCode >= 200 && statusCode < 300) {
+        <div class="result-message success-message">
+          <span class="result-icon" aria-hidden="true">✓</span>
+          <div>
+            <strong>Downstream call succeeded</strong>
+            <p>The caller API returned a successful response.</p>
+          </div>
+        </div>
+      } @else {
+        <div class="result-message error-message">
+          <span class="result-icon" aria-hidden="true">!</span>
+          <div>
+            <strong>Request failed</strong>
+            <p>{{ errorMessage }}</p>
+          </div>
+        </div>
+      }
+
+      <h3>Response body</h3>
+      <pre class="response-body">{{ responseBody || 'No response body returned.' }}</pre>
+
+      @if (lastTestedAt) {
+        <p class="timestamp">
+          Last tested: {{ lastTestedAt | date:'medium' }}
+        </p>
+      }
+    </section>
+  }
+
+  <section class="expected-flow">
+    <h2>Expected authentication flow</h2>
+
+    <ol>
+      <li>
+        <strong>Angular SPA</strong>
+        <span>Sends the authenticated request to the caller API.</span>
+      </li>
+      <li>
+        <strong>Caller API</strong>
+        <span>Obtains an app-only token using its Managed Identity.</span>
+      </li>
+      <li>
+        <strong>Downstream API</strong>
+        <span>Validates the token and requires the DownstreamInvoker role.</span>
+      </li>
+    </ol>
+  </section>
+</section>
