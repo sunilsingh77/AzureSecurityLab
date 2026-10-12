@@ -45,6 +45,11 @@ export const routes: Routes = [
     loadComponent: () => import('./storage/storage.component').then(m => m.StorageComponent),
     canActivate: [MsalGuard]
   },
+    {
+    path: 'downstream-test',
+    loadComponent: () => import('./downstream-test/downstream-test.component').then(m => m.DownstreamTestComponent),
+    canActivate: [MsalGuard]
+  },
   {
     path: '**',
 

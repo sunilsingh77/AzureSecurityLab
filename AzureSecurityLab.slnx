@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="AzureSecurityLab.Api/AzureSecurityLab.Api.csproj" />
+  <Project Path="AzureSecurityLab.DownstreamApi/AzureSecurityLab.DownstreamApi.csproj" Id="cf2bec0f-38c9-4846-947d-b41bbe888726" />
 </Solution>
