@@ -1,0 +1,18 @@
+<policies>
+<inbound>
+<base />
+<choose>
+<when condition='@(!(context.Operation.Id == "get-api-security-public" || context.Operation.Id == "get-api-security-rate-limit-test" || context.Operation.Id == "post-api-security-request-validation"))'>
+<validate-jwt header-name="Authorization" failed-validation-httpcode="401" require-scheme="Bearer">
+<openid-config url="https://login.microsoftonline.com/227a22ca-955a-45b7-ae6e-4b013467d116/v2.0/.well-known/openid-configuration" />
+<audiences>
+<audience>api://f9961b48-ae65-425a-a067-6fb81ebf62d2</audience>
+</audiences>
+</validate-jwt>
+</when>
+</choose>
+</inbound>
+<backend><base /></backend>
+<outbound><base /></outbound>
+<on-error><base /></on-error>
+</policies>
