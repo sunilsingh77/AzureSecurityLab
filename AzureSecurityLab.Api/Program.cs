@@ -1,9 +1,11 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using AzureSecurityLab.Api.ExceptionHandling;
+using AzureSecurityLab.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using AzureSecurityLab.Api.Services;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,27 +63,54 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Admin");
     });
 });
+// ========================================
+// Rate Limiting
+// ========================================
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
+    options.AddPolicy("RateLimitLab", httpContext =>
+    {
+        var clientIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(partitionKey: clientIp,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromSeconds(60),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            });
+    });
+});
 // ========================================
 // CORS
 // ========================================
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AngularClient", policy =>
     {
+        var allowedOrigins =
+            builder.Configuration
+                .GetSection("Cors:AllowedOrigins")
+                .Get<string[]>() ?? [];
+
         policy
-            .WithOrigins("http://localhost:4200")
+            .WithOrigins(allowedOrigins)
             .AllowAnyHeader()
             .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     });
 });
 
+
 builder.Services.AddScoped<AzureSqlService>();
 builder.Services.AddSingleton<AzureBlobStorageService>();
 builder.Services.AddHttpClient<DownstreamApiService>();
 
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 var app = builder.Build();
+app.UseExceptionHandler();
 // ========================================
 // Middleware
 // ========================================
@@ -99,7 +128,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AngularClient");
-
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
